@@ -215,7 +215,7 @@ function suiteClassCallback(target: SuiteCtor, context: TestFunctions) {
 	      innerFunction.toString = () => method.toString();	    
               testFunc(testName, noname(innerFunction));
             } else {
-	      innerFunction = function(this: Mocha.ITestCallbackContext) {
+	      const innerFunction = function(this: Mocha.ITestCallbackContext) {
                 applyDecorators(this, prototype, method, instance);
                 applyTestTraits(this, instance, method);
                 return method.call(instance);
