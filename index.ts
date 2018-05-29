@@ -207,17 +207,21 @@ function suiteClassCallback(target: SuiteCtor, context: TestFunctions) {
             if (shouldPending && !shouldSkip && !shouldOnly) {
               context.it.skip(testName);
             } else if (method.length > 0) {
-              testFunc(testName, noname(function(this: Mocha.ITestCallbackContext, done) {
+	      const innerFunction = function(this: Mocha.ITestCallbackContext, done) {
                 applyDecorators(this, prototype, method, instance);
                 applyTestTraits(this, instance, method);
                 return method.call(instance, done);
-              }));
+              };    
+	      innerFunction.toString = () => method.toString();	    
+              testFunc(testName, noname(innerFunction));
             } else {
-              testFunc(testName, noname(function(this: Mocha.ITestCallbackContext) {
+	      const innerFunction = function(this: Mocha.ITestCallbackContext) {
                 applyDecorators(this, prototype, method, instance);
                 applyTestTraits(this, instance, method);
                 return method.call(instance);
-              }));
+              };	 
+	      innerFunction.toString = () => method.toString();	 
+              testFunc(testName, noname(innerFunction));
             }
           }
         } catch (e) {
